@@ -5,6 +5,7 @@ import '../../components/Home/HmHot.dart';
 import '../../components/Home/HmMoreList.dart';
 import '../../components/Home/HmSuggestion.dart';
 import '../../components/Home/HmSlider.dart';
+import '../../api/home.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -17,10 +18,11 @@ class HomeView extends StatefulWidget {
 //内容:轮播图 分类（横向滚动） 推荐（瀑布流） 无限滚动
 class _HomeViewState extends State<HomeView> {
   //模拟数据
-  final List<BannerItem> bannerList = [
-    BannerItem(id: '1', imgUrl: 'https://picsum.photos/id/1018/1200/500'),
-    BannerItem(id: '2', imgUrl: 'https://picsum.photos/id/1016/1200/500'),
-    BannerItem(id: '3', imgUrl: 'https://picsum.photos/id/1043/1200/500'),
+  List<BannerItem> bannerList = [
+    // BannerItem(id: '1', imgUrl: 'https://picsum.photos/id/1018/1200/500'),
+    // BannerItem(id: '2', imgUrl: 'https://picsum.photos/id/1016/1200/500'),
+    // BannerItem(id: '3', imgUrl: 'https://picsum.photos/id/1043/1200/500'),
+
   ];
   //获取滚动容器的内容
   List<Widget> _getSlivers() {
@@ -48,6 +50,17 @@ class _HomeViewState extends State<HomeView> {
       SliverToBoxAdapter(child: SizedBox(height: 10)),
       HmMoreList(), //无限滚动组件
     ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getBannerList();
+  }
+  void _getBannerList() async {
+    //调用api获取轮播图数据
+    bannerList= await getBannerListAPI();
+    setState(() {});//更新状态，重新渲染页面
   }
 
   @override
