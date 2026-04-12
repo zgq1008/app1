@@ -74,6 +74,7 @@ class _HmSliderState extends State<HmSlider> {
             return GestureDetector(//点击导航点切换轮播图
               onTap: (){
                 _controller.animateToPage(index);//点击导航点切换到对应的轮播图
+                // _controller.jumpToPage(index);//立即跳转到对应的轮播图
               },
               child: AnimatedContainer(//导航点动画容器
                 duration: Duration(milliseconds: 300),//动画持续时间
