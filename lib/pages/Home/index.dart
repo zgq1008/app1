@@ -1,3 +1,4 @@
+import 'package:app1/viewmodels/home.dart';
 import 'package:flutter/material.dart';
 import '../../components/Home/HmCategory.dart';
 import '../../components/Home/HmHot.dart';
@@ -15,11 +16,17 @@ class HomeView extends StatefulWidget {
 //首页布局
 //内容:轮播图 分类（横向滚动） 推荐（瀑布流） 无限滚动
 class _HomeViewState extends State<HomeView> {
+  //模拟数据
+  final List<BannerItem> bannerList = [
+    BannerItem(id: '1', imgUrl: 'https://picsum.photos/id/1018/1200/500'),
+    BannerItem(id: '2', imgUrl: 'https://picsum.photos/id/1016/1200/500'),
+    BannerItem(id: '3', imgUrl: 'https://picsum.photos/id/1043/1200/500'),
+  ];
   //获取滚动容器的内容
   List<Widget> _getSlivers() {
     return [
       //使用SliverToBoxAdapter将普通组件转换为Sliver组件
-      SliverToBoxAdapter(child: const HmSlider()),
+      SliverToBoxAdapter(child: HmSlider(bannerList: bannerList)),
       SliverToBoxAdapter(child: SizedBox(height: 10)),
       SliverToBoxAdapter(child: const HmCategory()), //分类组件 横向滚动
       SliverToBoxAdapter(child: SizedBox(height: 10)),

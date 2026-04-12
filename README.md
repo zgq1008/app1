@@ -1,50 +1,53 @@
 # app1
 
-Flutter 学习项目，包含基础路由与底部导航栏示例。
+一个用于 Flutter 学习与练手的电商首页 Demo，包含基础路由、底部导航、多模块首页布局与轮播图组件。
 
-## 项目简介
+## 功能概览
 
-当前项目已实现：
+- 命名路由与统一路由入口
+- 底部导航栏（首页、分类、购物车、我的）
+- 使用 IndexedStack 保持 Tab 页面状态
+- 首页采用 CustomScrollView + Sliver 结构
+- 首页轮播图（carousel_slider）
+- 首页模块化组件拆分（分类、推荐、热门、更多列表等）
 
-- 路由入口与命名路由配置
-- 主页底部导航栏（首页、分类、购物车、我的）
-- 登录页基础页面
-- 使用 IndexedStack 保持各 Tab 页面状态
+## 路由说明
 
-## 页面与路由
+- /：主页 HomePage
+- /login：登录页 LoginPage
 
-- `/`：主页（HomePage）
-- `/login`：登录页（LoginPage）
+路由配置见：lib/routes/index.dart
 
-路由定义位置：
+## 关键目录
 
-- `lib/routes/index.dart`
+- lib/main.dart：应用启动入口
+- lib/routes/index.dart：路由管理
+- lib/pages/Main/index.dart：主页面与底部导航
+- lib/pages/Home/index.dart：首页滚动布局与模块组装
+- lib/components/Home/HmSlider.dart：首页轮播图组件
+- lib/viewmodels/home.dart：首页数据模型（BannerItem）
 
-## 目录说明
+## 依赖
 
-- `lib/main.dart`：应用启动入口
-- `lib/routes/index.dart`：路由管理
-- `lib/pages/Main/index.dart`：主页面与底部导航栏
-- `lib/pages/Home/index.dart`：首页
-- `lib/pages/Category/index.dart`：分类页
-- `lib/pages/Cart/index.dart`：购物车页
-- `lib/pages/Person/index.dart`：我的页面
-- `lib/pages/Login/index.dart`：登录页
+- flutter
+- cupertino_icons
+- carousel_slider: ^5.1.2
 
-## 本地运行
-
-1. 安装依赖：
+安装依赖：
 
 ```bash
 flutter pub get
 ```
 
-2. 启动项目：
+## 运行项目
 
 ```bash
 flutter run
 ```
 
-## 说明
+## 后续可扩展方向
 
-当前各业务页面为基础占位内容（Center + Text），可在此结构上继续扩展网络请求、状态管理与页面组件化。
+- 接入接口数据，替换首页模拟数据
+- 增加状态管理（Provider、Riverpod、Bloc 等）
+- 补充网络异常、空态与加载态
+- 增加组件测试与页面集成测试
