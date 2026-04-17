@@ -8,4 +8,6 @@ class GlobalConstants {
 //接口地址常量类
 class HttpConstants{
   static const String BANNER_LIST="/home/banner";//轮播图接口地址
+  static const String CATEGORY_LIST="/home/category/head";//第一步定义常量请求地址：分类接口地址
+  static const String PRODUCT_LIST="/hot/preference";//特惠推荐接口地址
 }
