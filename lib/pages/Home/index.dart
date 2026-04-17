@@ -32,6 +32,20 @@ SpecilaRecommendResult _specilaRecommendResult = SpecilaRecommendResult(
   title: "",
   subTypes: [],
 );
+//爆款推荐
+SpecilaRecommendResult _inVogueRecommendResult = SpecilaRecommendResult(
+  id: "",
+  title: "",
+  subTypes: [],
+);
+//一站买全
+SpecilaRecommendResult _oneStopRecommendResult = SpecilaRecommendResult(
+  id: "",
+  title: "",
+  subTypes: [],
+);
+//推荐列表
+List<GoodDetailItem> _recommendList = [];
   //获取滚动容器的内容
   List<Widget> _getSlivers() {
     return [
@@ -49,15 +63,15 @@ SpecilaRecommendResult _specilaRecommendResult = SpecilaRecommendResult(
           child: Flex(
             direction: Axis.horizontal,
             children: [
-              Expanded(child: HmHot()),
+              Expanded(child: HmHot(result: _inVogueRecommendResult,type:"hot")), //爆款推荐组件
               SizedBox(width: 10),
-              Expanded(child: HmHot()),
+              Expanded(child: HmHot(result: _oneStopRecommendResult,type:"oneStop")), //一站买全组件
             ],
           ),
         ),
       ),
-      SliverToBoxAdapter(child: SizedBox(height: 10)),
-      HmMoreList(), //无限滚动组件
+      SliverToBoxAdapter(child: SizedBox(height: 10)), 
+      HmMoreList(recommendList: _recommendList), //无限滚动组件
     ];
   }
 
@@ -67,6 +81,9 @@ SpecilaRecommendResult _specilaRecommendResult = SpecilaRecommendResult(
     _getBannerList();
     _getCategoryList();//1第一步：在initState生命周期方法中调用获取分类数据的函数
     _getSpecilaRecommend();
+    _getInVogueRecommend();
+    _getOneStopRecommend();
+    _getRecommendList();
   }
   //获取轮播图数据
   void _getBannerList() async {
@@ -88,7 +105,31 @@ SpecilaRecommendResult _specilaRecommendResult = SpecilaRecommendResult(
     _specilaRecommendResult = await homeApi.getSpecilaRecommendAPI();
     setState(() {});
   }
-
+  //获取爆款推荐数据
+  void _getInVogueRecommend() async {
+    _inVogueRecommendResult = await homeApi.getInVogueRecommendAPI();
+    setState(() {});
+  }
+  //获取一站买全数据
+  void _getOneStopRecommend() async {
+    _oneStopRecommendResult = await homeApi.getOneStopRecommendAPI();
+    setState(() {});
+  }
+//获取推荐列表数据
+  void _getRecommendList() async {
+  try {
+    final list = await homeApi.getRecommendListAPI({"limit": 10});
+    if (!mounted) return;
+    setState(() {
+      _recommendList = list;
+    });
+  } catch (e) {
+    if (!mounted) return;
+    setState(() {
+      _recommendList = [];
+    });
+  }
+}
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
