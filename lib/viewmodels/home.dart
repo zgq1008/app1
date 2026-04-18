@@ -160,3 +160,30 @@ class GoodDetailItem extends GoodsItem {
     );
   }
 }
+
+//改造GoodsItems来适配HmMoreList组件的接口数据结构
+class GoodsDetailsItems {
+  int counts;
+  int pageSize;
+  int pages;
+  int page;
+  List<GoodDetailItem> items;
+  GoodsDetailsItems({
+    required this.counts,
+    required this.pageSize,
+    required this.pages,
+    required this.page,
+    required this.items,
+  });
+  factory GoodsDetailsItems.fromJson(Map<String, dynamic> json) {
+    return GoodsDetailsItems(
+      counts: int.tryParse(json['counts']?.toString() ?? "") ?? 0,
+      pageSize: int.tryParse(json['pageSize']?.toString() ?? "") ?? 0,
+      pages: int.tryParse(json['pages']?.toString() ?? "") ?? 0,
+      page: int.tryParse(json['page']?.toString() ?? "") ?? 0,
+      items: (json['items'] as List)
+          .map((item) => GoodDetailItem.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
