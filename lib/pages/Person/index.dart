@@ -181,16 +181,38 @@ Widget _buildVipCard() {
   void initState() {
     super.initState();
     _getGuessList();
+    _registerEvent();
   }
-  void _getGuessList() async {
-    final result = await getGuessListAPI(_params);
-    setState(() {
-      _List = result.items;
+  void _registerEvent() {
+    _controller.addListener(() {
+      if (_controller.position.pixels >=
+          _controller.position.maxScrollExtent - 50) {
+        // 接近底部，加载更多数据
+        _getGuessList();
+      }
     });
   }
+  bool _isLoading = false; // 是否正在加载数据
+  bool _hasMore = true; // 是否还有更多数据可加载
+  void _getGuessList() async {
+    if (_isLoading || !_hasMore) return;
+    _isLoading = true;
+    final result = await getGuessListAPI(_params);
+    //_List = result.items;
+    _List.addAll(result.items);// 追加数据
+      _isLoading = false;
+      setState(() {});
+      _params['page'] += 1; // 增加页码
+      if (_params['page'] >= result.pages) {
+        _hasMore = false; // 没有更多数据了
+        return;
+      }
+  }
+  final ScrollController _controller = ScrollController();
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      controller: _controller,
       slivers: [
         SliverToBoxAdapter(child: _buildHeader()),
         SliverToBoxAdapter(child: _buildVipCard()),
