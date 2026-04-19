@@ -1,9 +1,13 @@
 import 'package:app1/api/person.dart';
 import 'package:app1/viewmodels/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../components/Home/HmMoreList.dart';
 import '../../components/Person/HmGuess.dart';
+import '../../stores/Tokenmanager.dart';
+import '../../stores/UserController.dart';
+import '../../viewmodels/person.dart';
 
 class PersonView extends StatefulWidget {
   const PersonView({super.key});
@@ -13,6 +17,38 @@ class PersonView extends StatefulWidget {
 }
 
 class _PersonViewState extends State<PersonView> {
+  final UserController _userController = Get.find();//put仅一次 find多次 获取UserController实例 通过GetX实现全局状态管理 其他页面可以监听用户信息的变化并更新UI
+  //退出登录组件
+  Widget _getLogout(){
+    return _userController.user.value.id.isNotEmpty? Expanded(child: GestureDetector(//如果用户已登录显示退出登录按钮，否则不显示
+      onTap: () {
+        //弹出确认框 使用showDialog方法显示一个对话框，用户点击确认后调用_userController.logout()方法退出登录
+        showDialog(
+          context:context,
+          builder:(context){
+            return AlertDialog(title: Text('提示'),
+            content:Text("确认退出登录吗？"),
+            actions:[
+              TextButton(onPressed: (){
+                Navigator.pop(context);//关闭对话框
+              }, child: Text('取消')),
+              TextButton(onPressed: ()async{
+                //清除用户信息
+                await tokenManager.removeToken();
+                _userController.updateUser(UserInfo.fromJson({}));;//更新用户信息为初始状态
+                Navigator.pop(context);//关闭对话框
+              }, child: Text('确认', style: TextStyle(color: Colors.red),)),
+            ],
+            );
+          },
+        );
+      },
+      child:Text('退出登录', style: TextStyle(fontSize: 14, color: Colors.red),
+      textAlign: TextAlign.right,
+      ),
+    ))
+    :Text("");
+  }
   Widget _buildHeader() {
     return Container(
       decoration: BoxDecoration(
@@ -25,23 +61,45 @@ class _PersonViewState extends State<PersonView> {
       padding: const EdgeInsets.only(left: 20, right: 40, top: 80, bottom: 20),
       child: Row(
         children: [
-          CircleAvatar(
+          Obx((){
+            return CircleAvatar(
             radius: 26,
-            backgroundImage: const AssetImage('lib/assets/goods_avatar.png'),
+            backgroundImage: _userController.user.value.id.isNotEmpty
+                ? NetworkImage(_userController.user.value.avatar)//如果用户已登录显示用户头像，否则显示默认头像
+            :const AssetImage('lib/assets/goods_avatar.png'),
             backgroundColor: Colors.white,
-          ),
+          );
+          }),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '立即登录',
+                Obx((){
+                  //Obx中必须有一个被监听的变量，否则会报错
+                  //监听用户数据的变化，如果用户已登录显示用户名，否则显示登录按钮
+                  return GestureDetector(
+                  onTap: () {
+                    if (_userController.user.value.id.isEmpty) {
+                      //当没有用户信息 点击跳转登录页
+                    Navigator.pushNamed(context, '/login');
+                    }
+                  },
+                  child:Text(
+                    _userController.user.value.id.isNotEmpty
+                        ? _userController.user.value.account
+                        :'立即登录',//如果用户已登录显示用户名，否则显示登录按钮
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
+                );
+                }),
               ],
             ),
           ),
+          //如果用户已经登录 在右侧显示一个退出登录的按钮
+        Obx((){
+          return _getLogout();
+        }),
         ],
       ),
     );
