@@ -66,7 +66,8 @@ class _HmSuggestionState extends State<HmSuggestion> {
   List<Widget> _buildRight() {
     List<GoodsItem> list = _getDisplayData();
     return List.generate(list.length, (int index) {
-      return Column(
+      return Expanded(
+        child: Column(
         children: [
           //cLIPRRect:裁剪组件，裁剪成圆角矩形
           ClipRRect(
@@ -74,10 +75,10 @@ class _HmSuggestionState extends State<HmSuggestion> {
             child: Image.network(//网络图片
               errorBuilder: (context, error, stackTrace) {
                 //如果图片加载失败，返回一个本地图片
-                return Image.asset("lib/assets/home_cmd_inner.png", width: 100, height: 140, fit: BoxFit.cover);
+                return Image.asset("lib/assets/home_cmd_inner.png", height: 140, fit: BoxFit.cover);
               },
               list[index].picture,
-              width: 100,
+              //width: 100,
               height: 140,
               fit: BoxFit.cover,
             ),
@@ -95,7 +96,7 @@ class _HmSuggestionState extends State<HmSuggestion> {
             ),
           ),
         ],
-      );
+      ));
     });
   }
 
@@ -124,8 +125,10 @@ class _HmSuggestionState extends State<HmSuggestion> {
             Row(
               children: [
                 _buildLeft(),
+                SizedBox(width: 10),
                 Expanded(
                   child: Row(
+                    spacing: 10,//设置子组件之间的间距
                     mainAxisAlignment: MainAxisAlignment.spaceAround, //平均分布
                     children: _buildRight(),
                   ),
